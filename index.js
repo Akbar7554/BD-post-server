@@ -36,7 +36,6 @@ async function run() {
             res.send(result)
         })
 
-        
 
         app.get('/jobs', async (req, res) => {
             let query = {}
