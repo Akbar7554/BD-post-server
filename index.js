@@ -35,7 +35,6 @@ async function run() {
             const result = await jobsCollection.insertOne(newJob)
             res.send(result)
         })
-        
 
         app.get('/jobs', async (req, res) => {
             let query = {}
