@@ -8,7 +8,11 @@ const app = express()
 const port = process.env.PORT || 5000
 
 app.use(cors({
-    origin: ['http://localhost:5173'],
+    origin: [
+        // 'http://localhost:5173',
+        'https://bd-post-e405e.web.app',
+        'https://bd-post-e405e.firebaseapp.com'
+    ],
     credentials: true,
 }
 ))
@@ -40,7 +44,7 @@ const verifyToken = (req, res, next) => {
     }
     jwt.verify(token, process.env.ACCESS_TOKEN, (err, decoded) => {
         if (err) {
-            return res.status(401).send({message : 'unauthorized access'})
+            return res.status(401).send({ message: 'unauthorized access' })
         }
         req.user = decoded
         next()
@@ -50,7 +54,7 @@ const verifyToken = (req, res, next) => {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const jobsCollection = client.db('jobsDB').collection('jobs')
         const bidCollection = client.db('jobsDB').collection('bids')
@@ -121,7 +125,7 @@ async function run() {
                 query = { userEmail: req.query.email }
             }
             if (req.user.email !== req.query.email) {
-                return res.status(403).send({message: "forbidden access"})
+                return res.status(403).send({ message: "forbidden access" })
             }
             const result = await bidCollection.find(query).toArray()
             res.send(result)
@@ -135,7 +139,7 @@ async function run() {
                 query = { buyerEmail: req.query.email }
             }
             if (req.user.email !== req.query.email) {
-                return res.status(403).send({message: "forbidden access"})
+                return res.status(403).send({ message: "forbidden access" })
             }
             const result = await bidCollection.find(query).toArray()
             res.send(result)
@@ -175,13 +179,13 @@ async function run() {
             //     sameSite: 'none'
             // })
             //     .send({ success: true })
-                res.cookie('token', token, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
 
-                })
-                    .send({ success: true })
+            })
+                .send({ success: true })
         })
 
         app.post('/logout', async (req, res) => {
@@ -194,7 +198,7 @@ async function run() {
 
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
